@@ -9,10 +9,9 @@ import akka.http.scaladsl.server.Directives._
 import akka.pattern.ask
 
 import scala.concurrent.duration._
-import com.aruba.distributedcache.node.Node.{GetClusterMembers, GetFibonacci, InsertEmployee}
-import com.aruba.distributedcache.processor.{EmployeeResponse, ProcessorResponse}
+import com.aruba.distributedcache.node.Node.{GetClusterMembers, GetEmployee, InsertEmployee}
+import com.aruba.distributedcache.processor.{EmployeeResponse}
 import com.typesafe.scalalogging.LazyLogging
-
 import com.aruba.distributedcache.processor.ProcessorResponseJsonProtocol._
 
 import scala.concurrent.Future
@@ -56,27 +55,6 @@ trait NodeRoutes extends SprayJsonSupport with LazyLogging {
     )
   }
 
-  lazy val processRoutes: Route = pathPrefix("process") {
-    concat(
-      pathPrefix("fibonacci") {
-        concat(
-          path(IntNumber) { n =>
-            pathEnd {
-              concat(
-                get {
-                  val processFuture: Future[ProcessorResponse] = (node ? GetFibonacci(n)).mapTo[ProcessorResponse]
-                  onSuccess(processFuture) { response =>
-                    complete(StatusCodes.OK, response)
-                  }
-                }
-              )
-            }
-          }
-        )
-      }
-    )
-  }
-
   lazy val insertEmployee: Route = pathPrefix("insert") {
     concat(
       pathPrefix("employee") {
@@ -95,6 +73,23 @@ trait NodeRoutes extends SprayJsonSupport with LazyLogging {
             )
           }
         )
+      }
+    )
+  }
+
+  lazy val getEmployee: Route = pathPrefix("employee") {
+    concat(
+      path(IntNumber) { n =>
+        pathEnd {
+          concat(
+            get {
+              val employeeFuture: Future[EmployeeResponse] = (node ? GetEmployee(n)).mapTo[EmployeeResponse]
+              onSuccess(employeeFuture) { response =>
+                complete(StatusCodes.OK, response)
+              }
+            }
+          )
+        }
       }
     )
   }
