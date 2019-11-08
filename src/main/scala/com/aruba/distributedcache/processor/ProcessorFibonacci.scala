@@ -1,12 +1,14 @@
 package com.aruba.distributedcache.processor
 
 import akka.actor.{Actor, ActorRef, Props}
+import com.aruba.distributedcache.api.Employee
 
 import scala.annotation.tailrec
 
 object ProcessorFibonacci {
   sealed trait ProcessorFibonacciMessage
   case class Compute(n: Int, replyTo: ActorRef) extends ProcessorFibonacciMessage
+  case class Put(employee: Employee, replyTo: ActorRef) extends ProcessorFibonacciMessage
 
   def props(nodeId: String) = Props(new ProcessorFibonacci(nodeId))
 
@@ -27,5 +29,8 @@ class ProcessorFibonacci(nodeId: String) extends Actor {
     case Compute(value, replyTo) => {
       replyTo ! ProcessorResponse(nodeId, fibonacci(value))
     }
+    case Put(employee, replyTo) =>
+      replyTo ! EmployeeResponse(nodeId, employee)
+
   }
 }
