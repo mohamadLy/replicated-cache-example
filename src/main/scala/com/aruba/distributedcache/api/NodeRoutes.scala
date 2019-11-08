@@ -9,13 +9,14 @@ import akka.http.scaladsl.server.Directives._
 import akka.pattern.ask
 
 import scala.concurrent.duration._
-import com.aruba.distributedcache.node.Node.{GetClusterMembers, GetFibonacci}
-import com.aruba.distributedcache.processor.ProcessorResponse
+import com.aruba.distributedcache.node.Node.{GetClusterMembers, GetEmployee, InsertEmployee}
+import com.aruba.distributedcache.processor.{EmployeeResponse}
+import com.typesafe.scalalogging.LazyLogging
 import com.aruba.distributedcache.processor.ProcessorResponseJsonProtocol._
 
 import scala.concurrent.Future
 
-trait NodeRoutes extends SprayJsonSupport with lazyLogging {
+trait NodeRoutes extends SprayJsonSupport with LazyLogging {
 
   implicit def system: ActorSystem
 
@@ -54,23 +55,41 @@ trait NodeRoutes extends SprayJsonSupport with lazyLogging {
     )
   }
 
-  lazy val processRoutes: Route = pathPrefix("process") {
+  lazy val insertEmployee: Route = pathPrefix("insert") {
     concat(
-      pathPrefix("fibonacci") {
+      pathPrefix("employee") {
         concat(
-          path(IntNumber) { n =>
-            pathEnd {
-              concat(
-                get {
-                  val processFuture: Future[ProcessorResponse] = (node ? GetFibonacci(n)).mapTo[ProcessorResponse]
+          pathEnd {
+            concat(
+              post {
+                entity(as[Employee]) { employee =>
+                  logger.info("employee: " + employee)
+                  val processFuture: Future[EmployeeResponse] = (node ? InsertEmployee(employee)).mapTo[EmployeeResponse]
                   onSuccess(processFuture) { response =>
                     complete(StatusCodes.OK, response)
                   }
                 }
-              )
-            }
+              }
+            )
           }
         )
+      }
+    )
+  }
+
+  lazy val getEmployee: Route = pathPrefix("employee") {
+    concat(
+      path(IntNumber) { n =>
+        pathEnd {
+          concat(
+            get {
+              val employeeFuture: Future[EmployeeResponse] = (node ? GetEmployee(n)).mapTo[EmployeeResponse]
+              onSuccess(employeeFuture) { response =>
+                complete(StatusCodes.OK, response)
+              }
+            }
+          )
+        }
       }
     )
   }

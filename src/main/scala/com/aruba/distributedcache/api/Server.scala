@@ -22,7 +22,7 @@ object Server extends App with NodeRoutes {
 
   val node: ActorRef = system.actorOf(Node.props(nodeId), "node")
 
-  lazy val routes: Route = healthRoute ~ statusRoutes ~ processRoutes
+  lazy val routes: Route = healthRoute ~ statusRoutes ~ insertEmployee ~ getEmployee
 
   Http().bindAndHandle(routes, address, port)
   println(s"Node $nodeId is listening at http://$address:$port")

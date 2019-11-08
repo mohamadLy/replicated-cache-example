@@ -17,7 +17,8 @@ libraryDependencies ++=Seq(
   "com.typesafe.akka" %% "akka-http" % "10.1.7",
   "com.typesafe.akka" %% "akka-http-spray-json" % "10.1.7",
   "com.hazelcast" % "hazelcast" % "3.12",
-  "ch.qos.logback" % "logback-classic" % "1.2.3"
+  "ch.qos.logback" % "logback-classic" % "1.2.3",
+  "com.typesafe.scala-logging" %% "scala-logging" % "3.9.2"
 )
 enablePlugins(JavaAppPackaging)
 enablePlugins(DockerPlugin)
