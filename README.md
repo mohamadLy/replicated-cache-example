@@ -10,7 +10,8 @@ We need to run each node runs on a docker container. Hence let's build our docke
 In order to interact with the system, a Akka http server had been created that listen at port 800x where x correspond to the requested node, 
 ### Interacting with node
 * Bring up seed node
-  * docker-compose up seed
+  * docker-compose up seed(note we are only going to use one seed node)
+  Seed node is up and running, listening on 2 ports 2552 and 8000
 ```
 CONTAINER ID        IMAGE                                  COMMAND                  CREATED             STATUS              PORTS                                            NAMES
 a2b889324ead        mohamadly/distributed-cache-demo:0.1   "/opt/docker/bin/dis…"   2 days ago          Up 10 seconds       0.0.0.0:2552->2552/tcp, 0.0.0.0:8000->8000/tcp   replicated-cache-example_seed_1
@@ -25,8 +26,25 @@ seed_1   | ]
 seed_1   |
 
 ```
+* Bring up node #1
+  * docker-compose up node1
+node #1 is up and running listening internally on port 8000 and map to port 8001 on the host
+```
+ ~ docker container ls
+CONTAINER ID        IMAGE                                  COMMAND                  CREATED             STATUS              PORTS                                            NAMES
+a2b889324ead        mohamadly/distributed-cache-demo:0.1   "/opt/docker/bin/dis…"   2 days ago          Up 15 minutes       0.0.0.0:2552->2552/tcp, 0.0.0.0:8000->8000/tcp   replicated-cache-example_seed_1
+faa842fdb6e7        mohamadly/distributed-cache-demo:0.1   "/opt/docker/bin/dis…"   2 days ago          Up About a minute   0.0.0.0:8001->8000/tcp                           replicated-cache-example_node1_1
+```
 
-Seed running on listening on port 2552 and 8000
-** 
-The port for the nodes are the following:
-*a
+Node #1 just join the hazelcast cluster
+```
+node1_1  | 
+node1_1  | Members {size:2, ver:2} [
+node1_1  |      Member [172.20.0.2]:5701 - f8d5deb4-01b6-423f-89da-f219c36b4949
+node1_1  |      Member [172.20.0.3]:5701 - 80720d62-2d53-463e-9450-cab3a9191ed7 this
+node1_1  | ]
+node1_1  | 
+```
+
+
+
