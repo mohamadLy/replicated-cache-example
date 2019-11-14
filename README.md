@@ -45,6 +45,56 @@ node1_1  |      Member [172.20.0.3]:5701 - 80720d62-2d53-463e-9450-cab3a9191ed7 
 node1_1  | ]
 node1_1  | 
 ```
+ * Add an employee to the cache
+```
+➜ ~ http POST localhost:8000/insert/employee first_name="Mike" last_name="Bleue" id=5                                                                                                                       [35/52]
+HTTP/1.1 200 OK                                                                                                                                                                                                    
+Content-Length: 79                                                                                                                                                                                                 
+Content-Type: application/json                                                                                                                                                                                     
+Date: Thu, 14 Nov 2019 16:28:23 GMT                                                                                                                                                                                
+Server: akka-http/10.1.7                                                                                                                                                                                           
+                                                                                                                                                                                                                   
+{                                                                                                                                                                                                                  
+    "employee": {                                                                                                                                                                                                  
+        "first_name": "Mike",                                                                                                                                                                                      
+        "id": "5",                                                                                                                                                                                                 
+        "last_name": "Bleue"                                                                                                                                                                                       
+    },                                                                                                                                                                                                             
+    "nodeId": "seed"
+}
+```
+ * Get an employee from cache using the seed node
+ ```
+~ http localhost:8000/employee/5                                                                                                                                                                          [19/52]
+HTTP/1.1 200 OK
+Content-Length: 79
+Content-Type: application/json
+Date: Thu, 14 Nov 2019 16:28:36 GMT
+Server: akka-http/10.1.7
 
+{
+    "employee": {
+        "first_name": "Mike",
+        "id": "5",
+        "last_name": "Bleue"
+    },
+    "nodeId": "seed"
+}
+```
+ * Get an employee from cache using the node1
+ ```
+~ http localhost:8001/employee/5                                                                                                                                                                          HTTP/1.1 200 OK                                                                                                                                                                                              [2/52]
+Content-Length: 80
+Content-Type: application/json
+Date: Thu, 14 Nov 2019 16:28:42 GMT
+Server: akka-http/10.1.7
 
-
+{
+    "employee": {
+        "first_name": "Mike",
+        "id": "5",
+        "last_name": "Bleue"
+    },
+    "nodeId": "node1"
+}
+```
