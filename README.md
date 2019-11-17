@@ -4,7 +4,11 @@ This is example that shows how to use replicated cache between akka-cluster node
 This example assume that you have a basic understand of how akka cluster work and how to use docker-compose
 
 ## Running
-We need to run each node runs on a docker container. Hence let's build our docker image. This can be achieve using the command "sbt docker:publishLocal", this will result to the creation of image mohamadly/distributed-cache-demo. You can run "docker images" to verify if the image had been create
+We need to run each node runs on a docker container. Hence let's build our docker image. This can be achieve using the command 
+* "sbt docker:publishLocal"  
+ This will result to the creation of image mohamadly/distributed-cache-demo. You can run 
+* "docker images"   
+ to verify if the image had been create
 
 ## API
 In order to interact with the system, a Akka http server had been created that listen at port 800x where x correspond to the requested node, 
